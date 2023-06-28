@@ -1,0 +1,104 @@
+.contenido tr {
+    background-color:#5C7E74;
+    color:#FFF;
+    font-weight:bold;
+}
+
+.contenido tr a {
+    text-decoration: none;
+}
+
+.contenido tr a:hover{
+    text-decoration: underline;
+}
+
+.contenido td {
+    padding-left: 3px;
+}
+
+.contenido tr+tr {
+    background-color:#000;
+    color:#FFF;
+    font-weight:bold;
+}
+
+.contenido tr+tr a {
+    color: #FFF;
+}
+
+.contenido tr+tr+tr {
+    background-color:#FFF;
+    color:#000;
+    font-weight:normal;
+}
+
+.contenido tr+tr+tr a {
+    color: #000;
+}
+
+.contenido tr.par {
+    background-color:#E6FFFF;
+    color:#000;
+    font-weight:normal;
+}
+
+.modal-pedido-wrapper tr a {
+    text-decoration: none;
+}
+
+.modal-pedido-wrapper tr a:hover {
+    text-decoration: underline;
+}
+
+.modal-pedido-wrapper td {
+    padding-left: 3px;
+}
+
+.modal-pedido-wrapper tr+tr a {
+    color: #FFF;
+}
+
+.modal-pedido-wrapper tr+tr+tr {
+    background-color: #FFF;
+    color: #000;
+    font-weight: normal;
+}
+
+.modal-pedido-wrapper tr+tr+tr a {
+    color: #000;
+}
+
+.modal-pedido-wrapper th {
+    background-color: #5C7E74;
+    color: #FFF;
+    font-weight: bold;
+}
+
+.form-control label{
+    font-weight: bold;
+}
+
+.modal-pedido-wrapper {
+    padding: 16px;
+}
+
+.form-control{
+    padding-bottom: 3px;
+}
+
+.pedidom{
+    padding-top: 2px;
+} 
+
+.modal-pedido-wrapper tr.par {
+    background-color: #E6FFFF;
+    color: #000;
+    font-weight: normal;
+}
+
+
+.atajo {
+    float:right;
+    margin: 0 5% 0 auto;
+    z-index: 20;
+}

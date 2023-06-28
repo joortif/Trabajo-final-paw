@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+    version="3.1" 
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <display-name>electrosa</display-name>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>FichaArticulo</servlet-name>
+        <servlet-class>sol.ser.FichaArticulo</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BuscarArticulos</servlet-name>
+        <servlet-class>sol.ser.BuscarArticulos</servlet-class>
+        <init-param>
+            <param-name>tamanioPagina</param-name>
+            <param-value>12</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>sol.ser.Login</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AreaCliente</servlet-name>
+        <servlet-class>sol.ser.AreaCliente</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Salir</servlet-name>
+        <servlet-class>sol.ser.Salir</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NuevoCliente</servlet-name>
+        <servlet-class>sol.ser.NuevoCliente</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PedidosCliente</servlet-name>
+        <servlet-class>sol.ser.PedidosCliente</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FichaArticulo</servlet-name>
+        <url-pattern>/FichaArticulo</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BuscarArticulos</servlet-name>
+        <url-pattern>/BuscarArticulos</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AreaCliente</servlet-name>
+        <url-pattern>/clientes/AreaCliente</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Salir</servlet-name>
+        <url-pattern>/Salir</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NuevoCliente</servlet-name>
+        <url-pattern>/NuevoCliente</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+    
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <url-pattern>*.html</url-pattern>
+            <url-pattern>*.handlebars</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+        </jsp-property-group>
+    </jsp-config>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Vistas de la aplicacion</web-resource-name>
+            <url-pattern>*.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint></auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>JSPs visibles</web-resource-name>
+            <url-pattern>/index.jsp</url-pattern>
+            <url-pattern>/admin/listadoArticulos.jsp</url-pattern>
+            <url-pattern>/admin/listadoArticulosConOrden.jsp</url-pattern>
+        </web-resource-collection>
+    </security-constraint>
+
+</web-app>

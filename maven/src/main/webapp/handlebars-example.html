@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAW: Handlebars</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+
+    <script id="template-example2" type="text/x-handlebars-template">
+        <div>
+           Asignatura {{asignatura}}
+        </div>
+        <div>
+            Proyecto ({{proyecto.codigo}}) {{proyecto.nombre}}
+         </div>
+    </script>
+    <style>
+        .result1 {
+            margin: 10px;
+            padding-left: 10px;
+            border-left: solid 4px #260289;
+        }
+
+        .result2 {
+            margin: 10px;
+            padding-left: 10px;
+            border-left: solid 4px #810056;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hello World!</h1>
+
+    <div id="result1" class="result1"></div>
+
+    <div id="result2" class="result2"></div>
+
+    <script>
+        // Ejemplo 1
+        // Primero se compila la plantilla
+        var template1 = Handlebars.compile("Handlebars <b>{{doesWhat}}</b>")
+        // Se ejecuta la plantilla compilada
+        const html1 = template1({ doesWhat: "rocks!" })
+        console.log(html1);
+        document.getElementById('result1').innerHTML = html1;
+
+        // Ejemplo 2
+        // Ahora la plantilla esta directamente en el propio HTML
+        var rawTemplate = document.getElementById("template-example2").innerHTML;
+        var template2 = Handlebars.compile(rawTemplate);
+        const html2 = template2(
+            {
+                proyecto:
+                {
+                    codigo: 'E2022-23',
+                    nombre: 'Electrosa'
+                }
+                ,
+                asignatura: 'PAW'
+            }
+        )
+        console.log(html2);
+        document.getElementById('result2').innerHTML = html2;
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<statements>
+  <drop> drop view IF EXISTS ReservasRepoTotal;</drop>
+  <drop> drop view IF EXISTS ReservasStockTotal;</drop>
+  <drop> drop view IF EXISTS Facturacion;</drop>
+  <drop> drop view IF EXISTS StockPrevisto;</drop>
+  <drop> drop view IF EXISTS ReposicionPrevista;</drop>
+  <drop> DROP TABLE IF EXISTS ReservaStock;</drop>
+  <drop> DROP TABLE IF EXISTS ReservaReposicion;</drop>
+  <drop> DROP TABLE IF EXISTS TransitoMercancia;</drop>
+  <drop> DROP TABLE IF EXISTS Oferta;</drop>
+  <drop> DROP TABLE IF EXISTS Oferta3x2;</drop>
+  <drop> DROP TABLE IF EXISTS ClientePreferente;</drop>
+  <drop> DROP TABLE IF EXISTS Reposicion;</drop>
+  <drop> DROP TABLE IF EXISTS Stock;</drop>
+  <drop> DROP TABLE IF EXISTS Almacen;</drop>
+  <drop> DROP TABLE IF EXISTS CodigoPostal;</drop>
+  <drop> DROP TABLE IF EXISTS Zona;</drop>
+  <drop> DROP TABLE IF EXISTS Linea;</drop>
+  <drop> DROP TABLE IF EXISTS LineaAnulada;</drop>
+  <drop> DROP TABLE IF EXISTS LineaEnRealizacion;</drop>
+  <drop> DROP TABLE IF EXISTS Pedido;</drop>
+  <drop> DROP TABLE IF EXISTS PedidoAnulado;</drop>
+  <drop> DROP TABLE IF EXISTS PedidoEnRealizacion;</drop>
+  <drop> DROP TABLE IF EXISTS Articulo;</drop>
+  <drop> DROP TABLE IF EXISTS Cliente;</drop>
+  <drop> DROP TABLE IF EXISTS Festivo;</drop>
+  <drop> DROP TABLE IF EXISTS NumDoc;</drop>
+  <drop> DROP TABLE IF EXISTS RolesUsuario</drop>
+  <drop> DROP TABLE IF EXISTS Usuario</drop>
+  <drop> DROP TABLE IF EXISTS RecuerdoContrasenia</drop>
+
+<table>
+create table Usuario (
+username varchar(50) not null primary key,
+password varchar(50) not null);
+</table>
+
+<table>
+create table RolesUsuario (
+  username varchar(50) not null,
+  rol varchar(20) not null,
+  primary key (username, rol),    
+  FOREIGN KEY (username) REFERENCES Usuario(username));
+</table>
+
+<table>CREATE TABLE Zona (
+  CODIGO  INT (1) PRIMARY KEY,
+  NOMBRE  VARCHAR (20) NOT NULL);
+</table>
+<table>
+CREATE TABLE CodigoPostal (
+  Zona       INT(1)     NOT NULL,
+  PROVINCIA  VARCHAR (35) NOT NULL PRIMARY KEY,
+  CPMIN      VARCHAR (5)  NOT NULL,
+  CPMAX      VARCHAR (5)  NOT NULL,
+  foreign key (Zona) REFERENCES Zona(codigo));
+</table>
+<table>
+CREATE TABLE Almacen (
+  CODIGO  VARCHAR (10) PRIMARY KEY,
+  CALLE   VARCHAR (50) NOT NULL,
+  CIUDAD  VARCHAR (20) NOT NULL,
+  CP      VARCHAR (5)  NOT NULL,
+  PROVINCIA  VARCHAR (35) NOT NULL,
+  Zona    INT (1)    NOT NULL,
+  coordX  NUMERIC (10,6) NOT NULL,
+  coordY  NUMERIC (10,6) NOT NULL,
+  foreign key (Zona) REFERENCES Zona(codigo),
+  foreign key (PROVINCIA) REFERENCES CodigoPostal(PROVINCIA));
+</table>
+<table>
+CREATE TABLE Articulo (
+  CODIGO      VARCHAR (10)  PRIMARY KEY,
+  NOMBRE      VARCHAR (50)  NOT NULL,
+  PVP         NUMERIC (10,2) NOT NULL CHECK (PVP >=0),
+  TIPO        VARCHAR (15)  NOT NULL,
+  FABRICANTE  VARCHAR (15)  NOT NULL,
+  foto        VARCHAR (50),
+  descripcion VARCHAR (200)) ;
+</table>
+<table>
+CREATE TABLE Cliente (
+  CODIGO    VARCHAR (10)  PRIMARY KEY,
+  CIF       VARCHAR (12)  NOT NULL UNIQUE,
+  NOMBRE    VARCHAR (50)  NOT NULL,
+  CALLE     VARCHAR (50)  NOT NULL,
+  CP        VARCHAR (5)   NOT NULL,
+  CIUDAD    VARCHAR (20)  NOT NULL,
+  email     VARCHAR (100)  NOT NULL,
+  provincia VARCHAR (35)  not null,
+  tfno      VARCHAR (11),
+  username  VARCHAR (50)  not null,
+  FOREIGN KEY (username) REFERENCES Usuario(username));
+</table>
+<table>
+CREATE TABLE Festivo (
+  FECHA  DATE          NOT NULL);
+</table>
+<table>
+CREATE TABLE Pedido (
+  CODIGO         VARCHAR (10) PRIMARY KEY,
+  CODIGOCLIENTE  VARCHAR (10) NOT NULL,
+  FECHACIERRE    DATETIME     NOT NULL,
+  CALLE          VARCHAR (50) NOT NULL,
+  CP             VARCHAR (5)  NOT NULL,
+  CIUDAD         VARCHAR (20) NOT NULL,
+  PROVINCIA      VARCHAR (35) NOT NULL,
+  CURSADO        INT (1)    DEFAULT 0,
+  foreign key (CODIGOCLIENTE) REFERENCES Cliente(codigo) );
+</table>
+<table>
+CREATE TABLE PedidoAnulado (
+  CODIGO         VARCHAR (10) PRIMARY KEY,
+  FECHACIERRE    DATETIME     NOT NULL,
+  FECHAANULACION DATETIME     NOT NULL,
+  CODIGOCLIENTE  VARCHAR (10) NOT NULL,
+  foreign key (CODIGOCLIENTE) REFERENCES Cliente(codigo) );
+</table>
+<table>
+CREATE TABLE PedidoEnRealizacion (
+  CODIGO         VARCHAR (10) PRIMARY KEY,
+  FECHAINICIO    DATETIME     NOT NULL,
+  CODIGOCLIENTE  VARCHAR (10) NOT NULL UNIQUE, 
+  foreign key (CODIGOCLIENTE) REFERENCES Cliente(codigo));
+</table>
+<table>
+CREATE TABLE Linea (
+  CODIGO                VARCHAR (13) PRIMARY KEY,
+  CODIGOPEDIDO          VARCHAR (10) NOT NULL,
+  CODIGOARTICULO        VARCHAR (10) NOT NULL,
+  CANTIDAD              INT (2)    NOT NULL CHECK (cantidad >=0),
+  PRECIOBASE            NUMERIC (10,2) NOT NULL,
+  FECHAENTREGADESEADA   DATE,
+  FECHAENTREGAPREVISTA  DATE,
+  FECHAENTREGAREAL      DATE,
+  FECHARECEPCION        DATE,
+  PRECIOREAL            NUMERIC (10,2) NOT NULL,
+  foreign key (CODIGOPEDIDO) REFERENCES Pedido(codigo),
+  foreign key (CODIGOARTICULO) REFERENCES Articulo(codigo));
+</table>
+<table>
+CREATE TABLE LineaAnulada (
+  CODIGO               VARCHAR (13) PRIMARY KEY,
+  CODIGOARTICULO       VARCHAR (10) NOT NULL,
+  CANTIDAD             INT (2)    NOT NULL CHECK (cantidad >=0),
+  CODIGOPEDIDO         VARCHAR (10) NOT NULL,
+  foreign key (CODIGOPEDIDO) REFERENCES PedidoAnulado(codigo),
+  foreign key (CODIGOARTICULO) REFERENCES Articulo(codigo));
+</table>
+<table>
+CREATE TABLE LineaEnRealizacion (
+  CODIGO               VARCHAR (13) PRIMARY KEY,
+  CODIGOARTICULO       VARCHAR (10) NOT NULL,
+  CANTIDAD             INT (2)    NOT NULL CHECK (cantidad >=0),
+  PRECIO               NUMERIC (10,2) NOT NULL,
+  FECHAENTREGADESEADA  DATE,
+  CODIGOPEDIDO         VARCHAR (10) NOT NULL,
+  foreign key (CODIGOPEDIDO) REFERENCES PedidoEnRealizacion(codigo),
+  foreign key (CODIGOARTICULO) REFERENCES Articulo(codigo));
+</table>
+<table>
+CREATE TABLE NumDoc (
+  ANIO  INT(4)    PRIMARY KEY,
+  NUM   INT(10)   NOT NULL);
+</table>
+<table>
+CREATE TABLE Reposicion (
+  CODIGO          VARCHAR (10) PRIMARY KEY,
+  CODIGOARTICULO  VARCHAR (10) NOT NULL,
+  CODIGOALMACEN   VARCHAR (10) NOT NULL,
+  CANTIDAD        INT (2)    NOT NULL CHECK (cantidad >=0),
+  FECHAENTRADA    DATE          NOT NULL,
+  foreign key (CODIGOARTICULO) REFERENCES Articulo(codigo),
+  foreign key (CODIGOALMACEN) REFERENCES Almacen(codigo) );
+</table>
+<table>
+CREATE TABLE Stock (
+  CODIGO          VARCHAR (10) PRIMARY KEY,
+  CODIGOARTICULO  VARCHAR (10) NOT NULL,
+  CODIGOALMACEN   VARCHAR (10) NOT NULL,
+  CANTIDAD        INT (2)    NOT NULL CHECK (cantidad >=0),
+  foreign key (CODIGOARTICULO) REFERENCES Articulo(codigo),
+  foreign key (CODIGOALMACEN) REFERENCES Almacen(codigo) );
+</table>
+<table>
+create table Oferta (
+  codigoArticulo VARCHAR(10) NOT NULL UNIQUE,
+  descuento      NUMERIC(5,2) NOT NULL,
+  fecha_inicio   DATE NOT NULL,
+  fecha_fin      DATE,
+  activa         BOOLEAN,
+  FOREIGN KEY (codigoArticulo) REFERENCES Articulo(codigo));
+</table>
+<table>
+create table Oferta3x2 (
+  codigoArticulo VARCHAR(10) NOT NULL UNIQUE,
+  aComprar INT(3) NOT NULL,
+  aPagar INT(3) NOT NULL,
+  fecha_inicio   DATE NOT NULL,
+  fecha_fin      DATE,
+  activa         BOOLEAN,
+  FOREIGN KEY (codigoArticulo) REFERENCES Articulo(codigo));
+</table>
+<table>
+create table ClientePreferente (
+  codigoCliente VARCHAR(10) NOT NULL UNIQUE,
+  descuento NUMERIC(5,2) NOT NULL,
+  incrFact NUMERIC(5,2),
+  FOREIGN KEY(codigoCliente) REFERENCES Cliente(codigo) );
+</table>
+<table>
+CREATE TABLE ReservaStock (
+	codigoLinea	VARCHAR(13) NOT NULL,
+	codigoStock	VARCHAR(10) NOT NULL,
+	cantidad	INT(2) NOT NULL,
+    PRIMARY KEY (codigoLinea, codigoStock),    
+    FOREIGN KEY (codigoStock) REFERENCES Stock(codigo));
+</table>
+<table>
+CREATE TABLE ReservaReposicion (
+	codigoLinea	VARCHAR(13) NOT NULL,
+	codigoReposicion	VARCHAR(10) NOT NULL,
+	cantidad	INT(2) NOT NULL,
+    PRIMARY KEY (codigoLinea, codigoReposicion),    
+    FOREIGN KEY (codigoReposicion) REFERENCES Reposicion(codigo));
+</table>
+<table>
+CREATE TABLE TransitoMercancia (
+  almacenOrigen   VARCHAR (10) NOT NULL,
+  almacenDestino  VARCHAR (10)  NOT NULL,
+  fechaSalida     DATE  NOT NULL,
+  codigoLinea     VARCHAR (13)  NOT NULL,
+  cantidad        INT  NOT NULL,
+  codigoArticulo  VARCHAR (10) NOT NULL,
+  FOREIGN KEY (almacenOrigen) REFERENCES Almacen (codigo),
+  FOREIGN KEY (almacenDestino) REFERENCES Almacen (codigo),  
+  FOREIGN KEY (codigoArticulo) REFERENCES Articulo (codigo));
+</table>
+<table>
+CREATE TABLE RecuerdoContrasenia (
+  userName varchar(50) NOT NULL,
+  codigo   VARCHAR (200)  NOT NULL,
+  fecha    datetime  NOT NULL,
+  FOREIGN KEY (username) REFERENCES Usuario(username));
+</table>
+	
+
+
+
+<view>
+create or replace view Facturacion as (
+  select codigoCliente, date_format(fechaCierre,'%Y') anio, sum(precioReal) importe
+  from Pedido, Linea
+  where Pedido.codigo = Linea.codigoPedido
+  group by codigoCliente, date_format(fechaCierre,'%Y'));
+</view>
+
+<view>
+create or replace view ReservasStockTotal as (
+  select codigoStock, sum(cantidad) cantidad
+  from ReservaStock
+  group by codigoStock);
+</view>
+
+<view>					  
+create or replace view StockPrevisto as (
+  select codigo, Stock.cantidad-ifnull(ReservasStockTotal.cantidad,0) StockPrevisto, codigoArticulo, codigoAlmacen
+  from Stock LEFT OUTER JOIN  ReservasStockTotal ON Stock.codigo = ReservasStockTotal.codigoStock);
+</view>
+
+<view>	
+create or replace view ReservasRepoTotal as (
+  select codigoReposicion, sum(cantidad) cantidad
+  from ReservaReposicion
+  group by codigoReposicion);
+</view>
+
+<view>
+create or replace view ReposicionPrevista as (
+  select codigo, Reposicion.cantidad-ifnull(ReservasRepoTotal.cantidad,0) cantidadPrevista, codigoArticulo, codigoAlmacen, fechaEntrada
+  from Reposicion LEFT OUTER JOIN ReservasRepoTotal ON Reposicion.codigo = ReservasRepoTotal.codigoReposicion);
+</view>
+</statements>
+
